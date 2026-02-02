@@ -48,7 +48,7 @@ function renderSearchResults(reports) {
 
   if (!reports || reports.length === 0) {
     resultsBody.innerHTML =
-      '<tr><td colspan="6" class="empty-state">No results found</td></tr>';
+      '<tr><td colspan="9" class="empty-state">No results found</td></tr>';
     showingCount.textContent = '0';
     return;
   }
@@ -57,14 +57,21 @@ function renderSearchResults(reports) {
 
   reports.forEach((report) => {
     const row = document.createElement('tr');
+    const statusClass =
+      report.flowPath === 'success' ? 'status-success' : 'status-error';
+    const statusText = report.flowPath === 'success' ? '✓ Success' : '✗ Failed';
+
     row.innerHTML = `
+      <td>${escapeHtml(report.index)}</td>
       <td>
         <img src="${escapeHtml(report.inputPhotoUrl)}" alt="Item Image" onclick="openImageModal(this.src)" />
       </td>
-      <td>${escapeHtml(report.query)}</td>
-      <td class="price-value">$${escapeHtml(report.usdValue)}</td>
-      <td class="price-value price-low">$${escapeHtml(report.lowestPrice)}</td>
-      <td class="price-value price-high">$${escapeHtml(report.highestPrice)}</td>
+      <td>${escapeHtml(report.resultName)}</td>
+      <td><span class="genre-badge">${escapeHtml(report.resultCardGenre || '-')}</span></td>
+      <td class="price-value">$${escapeHtml(report.resultCurrentMarketPrice)}</td>
+      <td class="price-value price-low">$${escapeHtml(report.resultLowestPrice)}</td>
+      <td class="price-value price-high">$${escapeHtml(report.resultHighestPrice)}</td>
+      <td><span class="${statusClass}">${statusText}</span></td>
       <td>
         <div class="action-group">
           <a href="${escapeHtml(report.ebayLink)}" target="_blank" rel="noopener noreferrer">
@@ -151,14 +158,31 @@ function closeImageModal() {
 function openCompareModal(report) {
   const modal = document.getElementById('compare-modal');
   const query = document.getElementById('compare-query');
-  query.textContent = formatDisplayValue(report.query);
+  const genre = document.getElementById('compare-genre');
+  query.textContent = formatDisplayValue(report.resultName);
+  genre.textContent = report.resultCardGenre
+    ? `Genre: ${report.resultCardGenre}`
+    : '';
 
-  setCompareValue('compare-actual-value', report.usdValue);
-  setCompareValue('compare-actual-low', report.lowestPrice);
-  setCompareValue('compare-actual-high', report.highestPrice);
+  setCompareValue('compare-actual-value', report.resultCurrentMarketPrice);
+  setCompareValue('compare-actual-low', report.resultLowestPrice);
+  setCompareValue('compare-actual-high', report.resultHighestPrice);
+  setCompareValue(
+    'compare-actual-high-filtered',
+    report.resultHighestPriceFiltered,
+  );
   setCompareValue('compare-db-value', report.dbUsdValue);
   setCompareValue('compare-db-low', report.dbLowestPrice);
   setCompareValue('compare-db-high', report.dbHighestPrice);
+
+  // Set meta info
+  document.getElementById('compare-flow').textContent = report.flowPath || '-';
+  document.getElementById('compare-fallback').textContent = report.fallbackUsed
+    ? 'Yes'
+    : 'No';
+  document.getElementById('compare-duration').textContent = report.durationMs
+    ? `${(report.durationMs / 1000).toFixed(1)}s`
+    : '-';
 
   modal.classList.add('active');
 }
@@ -211,7 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(() => {
       const resultsBody = document.getElementById('results-body');
       resultsBody.innerHTML =
-        '<tr><td colspan="6" class="error">db.json couldnt load. Please run the page from a local server.</td></tr>';
+        '<tr><td colspan="9" class="error">db.json couldnt load. Please run the page from a local server.</td></tr>';
       document.getElementById('showing-count').textContent = '0';
       currentPage = 1;
       totalPages = 1;

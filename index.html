@@ -314,6 +314,39 @@
         color: var(--danger);
       }
 
+      /* Status Badge */
+      .status-success {
+        display: inline-block;
+        padding: 4px 10px;
+        background: #dcfce7;
+        color: #166534;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 500;
+      }
+
+      .status-error {
+        display: inline-block;
+        padding: 4px 10px;
+        background: #fee2e2;
+        color: #991b1b;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 500;
+      }
+
+      /* Genre Badge */
+      .genre-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        background: var(--primary-light);
+        color: var(--primary-dark);
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+
       /* Loading State */
       .loading {
         text-align: center;
@@ -659,16 +692,19 @@
         <table id="results-table">
           <thead>
             <tr>
+              <th>#</th>
               <th>Image</th>
-              <th>Query</th>
-              <th>Est. Value</th>
+              <th>Card Name</th>
+              <th>Genre</th>
+              <th>Market Price</th>
               <th>Min Price</th>
               <th>Max Price</th>
+              <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody id="results-body">
-            <tr><td colspan="6" class="loading">Loading results...</td></tr>
+            <tr><td colspan="9" class="loading">Loading results...</td></tr>
           </tbody>
         </table>
       </div>
@@ -703,10 +739,11 @@
         <div class="compare-header">
           <h2 id="compare-title">Value Comparison</h2>
           <p id="compare-query"></p>
+          <p id="compare-genre" style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 4px;"></p>
         </div>
         <div class="compare-grid">
           <div class="compare-col">
-            <h3>DB</h3>
+            <h3>DB Values</h3>
             <div class="compare-row">
               <span>Est. Value</span>
               <strong id="compare-db-value">$0</strong>
@@ -721,9 +758,9 @@
             </div>
           </div>
           <div class="compare-col">
-            <h3>Actual</h3>
+            <h3>eBay Results</h3>
             <div class="compare-row">
-              <span>Est. Value</span>
+              <span>Market Price</span>
               <strong id="compare-actual-value">$0</strong>
             </div>
             <div class="compare-row">
@@ -734,8 +771,16 @@
               <span>Max Price</span>
               <strong id="compare-actual-high">$0</strong>
             </div>
+            <div class="compare-row">
+              <span>Max (Filtered)</span>
+              <strong id="compare-actual-high-filtered">$0</strong>
+            </div>
           </div>
-          
+        </div>
+        <div class="compare-meta" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 0.85rem; color: var(--text-secondary);">
+          <span>Flow: <strong id="compare-flow">-</strong></span>
+          <span style="margin-left: 16px;">Fallback: <strong id="compare-fallback">-</strong></span>
+          <span style="margin-left: 16px;">Duration: <strong id="compare-duration">-</strong></span>
         </div>
       </div>
     </div>
