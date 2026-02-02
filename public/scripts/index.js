@@ -167,10 +167,6 @@ function openCompareModal(report) {
   setCompareValue('compare-actual-value', report.resultCurrentMarketPrice);
   setCompareValue('compare-actual-low', report.resultLowestPrice);
   setCompareValue('compare-actual-high', report.resultHighestPrice);
-  setCompareValue(
-    'compare-actual-high-filtered',
-    report.resultHighestPriceFiltered,
-  );
   setCompareValue('compare-db-value', report.dbUsdValue);
   setCompareValue('compare-db-low', report.dbLowestPrice);
   setCompareValue('compare-db-high', report.dbHighestPrice);
